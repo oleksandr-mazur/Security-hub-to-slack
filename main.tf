@@ -110,12 +110,13 @@ resource "aws_lambda_function" "lambdafindingsToSlack" {
   role             = aws_iam_role.lambda.arn
   filename         = data.archive_file.lambda_zip_inline.output_path
   source_code_hash = data.archive_file.lambda_zip_inline.output_base64sha256
-  runtime          = "python3.7"
+  runtime          = "python3.9"
 
   environment {
     variables = {
       slackChannel = var.SlackChannel
       webHookUrl   = var.IncomingWebHookURL
+      projectName  = var.projectName
     }
   }
   memory_size = 128
@@ -125,10 +126,6 @@ resource "aws_lambda_function" "lambdafindingsToSlack" {
 }
 
 resource "null_resource" "package" {
-  triggers = {
-    "buildat" = timestamp()
-  }
-
   provisioner "local-exec" {
     command = "rm -rf build && mkdir build && cp '${path.module}/script.py' build && pip install -t build requests"
   }

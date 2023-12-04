@@ -8,3 +8,9 @@ variable "SlackChannel" {
   description = "Slack Chennel Name"
   default     = "security_alerts"
 }
+
+variable "projectName" {
+  type        = string
+  description = "Project Name"
+  default     = "Unknown"
+}

@@ -117,6 +117,7 @@ resource "aws_lambda_function" "lambdafindingsToSlack" {
       slackChannel = var.SlackChannel
       webHookUrl   = var.IncomingWebHookURL
       projectName  = var.projectName
+      severityLevels  = var.severityLevels
     }
   }
   memory_size = 128
@@ -126,6 +127,10 @@ resource "aws_lambda_function" "lambdafindingsToSlack" {
 }
 
 resource "null_resource" "package" {
+  triggers = {
+    "buildat" = fileexists("${path.root}/build/script.py")
+  }
+
   provisioner "local-exec" {
     command = "rm -rf build && mkdir build && cp '${path.module}/script.py' build && pip install -t build requests"
   }

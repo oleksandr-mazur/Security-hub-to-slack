@@ -2,10 +2,11 @@ import os
 import datetime
 import requests
 
-
+default_severity_levels = "LOW,MEDIUM,HIGH,CRITICAL"
 webhook_url = os.environ['webHookUrl']
 slack_channel = os.environ['slackChannel']
 project_name = os.environ['projectName']
+severity_levels = os.getenv('severityLevels', default_severity_levels).split(',')
 consoleUrl = "https://console.aws.amazon.com/securityhub"
 
 accounts = {
@@ -36,6 +37,10 @@ def process_event(event):
         elif 70 <= finding['Severity']['Normalized'] and finding['Severity']['Normalized'] <= 89: severity, color = 'HIGH', '#ed7211'
         elif 90 <= finding['Severity']['Normalized'] and finding['Severity']['Normalized'] <= 100: severity, color = 'CRITICAL', '#ff0209'
         else: severity, color = 'INFORMATIONAL', '#007cbc'
+
+        if severity not in severity_levels:
+            continue
+        print(f"Got alert in {severity} severity level, {severity_levels}")
 
         attachment.append({
             "fallback": f"{finding} - {consoleUrl}/home?region={region}#/findings?search=id%3D{messageId}",

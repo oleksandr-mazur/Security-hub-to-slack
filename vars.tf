@@ -14,3 +14,10 @@ variable "projectName" {
   description = "Project Name"
   default     = "Unknown"
 }
+
+variable "severityLevels" {
+  type        = string
+  description = "Severity Levels"
+  default     = "LOW,MEDIUM,HIGH,CRITICAL"
+}
+
